@@ -1,0 +1,31 @@
+<Window x:Class="RadioButtonSample01.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:prism="http://prismlibrary.com/"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        xmlns:local="clr-namespace:RadioButtonSample01.Views"
+        mc:Ignorable="d"
+        Title="{Binding Title}" Height="200" Width="200">
+    <GroupBox Header="Group01">
+        <StackPanel>
+            <RadioButton Content="海外"  VerticalAlignment="Center" IsChecked="{Binding IsOverseaChecked}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Checked">
+                        <prism:InvokeCommandAction Command="{Binding SelectedCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </RadioButton>
+            <RadioButton Content="国内"  VerticalAlignment="Center" IsChecked="{Binding IsDomesticChecked}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Checked">
+                        <prism:InvokeCommandAction Command="{Binding SelectedCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </RadioButton>
+            <TextBlock Text="{Binding Text}"/>
+        </StackPanel>
+    </GroupBox>
+</Window>
