@@ -1,0 +1,18 @@
+// Sample
+digraph {
+	graph [fontname="Segoe UI" rankdir=LR]
+	edge [dir=none]
+	a [label=a shape=box]
+	b [label=b shape=box]
+	c [label=c shape=box]
+	d [label=d shape=box]
+	e [label=e shape=box]
+	f [label=f shape=box]
+	g [label=g shape=box]
+	a -> b
+	b -> c
+	c -> d
+	b -> e
+	a -> f
+	a -> g
+}

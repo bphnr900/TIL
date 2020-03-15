@@ -1,4 +1,7 @@
 
+from graphviz import Digraph
+
+# CSVからデータを読み取る
 class Read_CSV():
     def __init__(self):
         self._path = 'data.csv'
@@ -14,14 +17,19 @@ class Read_CSV():
             data = csv.DictReader(fin, fieldnames=['PartNumber', 'Level', 'RevNo'])
             return [row for row in data]
 
+# 部品をツリー状に変換する
 class PartsStructuresBuilder():
-    def __init__(self, partsDict):
-        partsDict = self._addEmptyList(partsDict)
+    def __init__(self):
+        self._rawData = self._getData()
+        partsDict = self._addEmptyList(self._rawData)
         maxLevel = self._getLevelMax(partsDict)
         self._partsStructure = self._makeStructures(maxLevel, partsDict)
 
     def get_Structure(self):
         return self._partsStructure
+
+    def get_rawData(self):
+        return self._rawData
 
     def _makeStructures(self, maxLevel, partsDict):
         parentPart = partsDict[0]
@@ -50,13 +58,44 @@ class PartsStructuresBuilder():
             part['child'] = []
         return partsDict
 
+    def _getData(self):
+        csvReader = Read_CSV()
+        return csvReader.get_data()
 
+# graphvizを使って線をひく
+class TreePainter():
+    def __init__(self):
+        self._dot = Digraph(comment='Sample',graph_attr={'rankdir':'LR','fontname':'Segoe UI'},edge_attr={'dir':'none'})
 
+        builder = PartsStructuresBuilder()
+        # アイテムを追加
+        self._addNode(builder.get_rawData())
+        # アイテム間で線をひく
+        self._addEdges(builder.get_Structure())
 
+    def get_dot(self):
+        return self._dot
 
-csvReader = Read_CSV()
-partsDict = csvReader.get_data()
-builder = PartsStructuresBuilder(partsDict)
-structure = builder.get_Structure()
+    def _addNode(self, structure):
+        for part in structure:
+            self._dot.node(part['PartNumber'],label=part['PartNumber'],shape='box')
 
-print('test')
+    def _addEdges(self, structure):
+        edge = []
+        edge = self._makeEdge(structure, edge)
+        self._dot.edges(edge)
+
+    def _makeEdge(self, structure, edge):
+        for part in structure['child']:
+            edge.append(structure['PartNumber'] + part['PartNumber'])
+            if len(part['child']) > 0:
+                edge = self._makeEdge(part, edge)
+        return edge
+
+if __name__ == "__main__":
+    TreePainter = TreePainter()
+    dot = TreePainter.get_dot()
+
+    dot.render('test-output/round-table.gv', view=True)
+
+    print('test')
